@@ -1,0 +1,122 @@
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 97.6% 0.014 79;
+    --surface: 99.2% 0.005 90;
+    --surface-strong: 95.7% 0.02 75;
+    --text: 31% 0.03 42;
+    --muted: 58% 0.025 48;
+    --line: 90% 0.015 70;
+    --primary: 73% 0.17 50;
+    --primary-soft: 90% 0.06 65;
+    --accent: 74% 0.16 17;
+    --accent-soft: 93% 0.04 16;
+    --success: 77% 0.13 145;
+    --warning: 82% 0.14 70;
+  }
+
+  :root[data-theme="soft-peach"] {
+    --bg: 97.4% 0.012 53;
+    --surface: 99.1% 0.004 65;
+    --surface-strong: 95.8% 0.018 40;
+    --text: 30% 0.028 24;
+    --muted: 57% 0.026 28;
+    --line: 89% 0.015 40;
+    --primary: 76% 0.15 40;
+    --primary-soft: 91% 0.05 40;
+    --accent: 75% 0.15 8;
+    --accent-soft: 93% 0.04 10;
+  }
+
+  :root[data-theme="rose-glow"] {
+    --bg: 97.8% 0.01 20;
+    --surface: 99.4% 0.004 20;
+    --surface-strong: 95.9% 0.015 18;
+    --text: 30% 0.028 20;
+    --muted: 57% 0.024 18;
+    --line: 89% 0.013 20;
+    --primary: 72% 0.15 44;
+    --primary-soft: 90% 0.045 35;
+    --accent: 74% 0.16 8;
+    --accent-soft: 93% 0.04 10;
+  }
+
+  html {
+    font-family: theme("fontFamily.body");
+    background: oklch(var(--bg));
+    color: oklch(var(--text));
+  }
+
+  body {
+    @apply min-h-screen antialiased;
+    background:
+      radial-gradient(circle at top, rgba(255, 188, 116, 0.18), transparent 30%),
+      radial-gradient(circle at right, rgba(244, 114, 182, 0.14), transparent 32%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0)),
+      oklch(var(--bg));
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(190, 99, 31, 0.35) transparent;
+  }
+}
+
+@layer components {
+  .surface-card {
+    @apply rounded-4xl border p-6 shadow-soft;
+    background: oklch(var(--surface) / 0.96);
+    border-color: oklch(var(--line));
+  }
+
+  .surface-card-muted {
+    @apply rounded-4xl border p-6;
+    background: oklch(var(--surface-strong) / 0.72);
+    border-color: oklch(var(--line));
+  }
+
+  .gradient-title {
+    @apply font-display font-semibold tracking-tight text-transparent;
+    background-image: linear-gradient(135deg, #c76319 0%, #ff9f5a 45%, #f973a7 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition-transform duration-200 hover:-translate-y-0.5;
+    background: linear-gradient(135deg, #f973a7, #fb7185);
+    color: white;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold transition-colors;
+    background: oklch(var(--surface));
+    border-color: oklch(var(--line));
+    color: oklch(var(--text));
+  }
+
+  .badge-pill {
+    @apply inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold;
+    background: oklch(var(--primary-soft));
+    color: oklch(var(--text));
+  }
+
+  .input-base {
+    @apply w-full rounded-3xl border px-4 py-3 text-sm outline-none transition focus:ring-2;
+    background: oklch(var(--surface));
+    border-color: oklch(var(--line));
+    color: oklch(var(--text));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  }
+
+  .input-base:focus {
+    border-color: rgba(199, 99, 25, 0.3);
+    box-shadow: 0 0 0 4px rgba(255, 175, 120, 0.2);
+  }
+}
+

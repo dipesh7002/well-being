@@ -1,0 +1,13 @@
+{
+  "name": "well-being-journal-web-app",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm run dev --prefix server & npm run dev --prefix client",
+    "dev:ai": "python3 -m uvicorn app:app --reload --app-dir ai-service --port 8000",
+    "dev:client": "npm run dev --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "build": "npm run build --prefix client",
+    "start": "npm run start --prefix server"
+  }
+}
