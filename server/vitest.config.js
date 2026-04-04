@@ -1,0 +1,14 @@
+import { defineConfig } from "vitest/config";
+
+export default defineConfig({
+  test: {
+    environment: "node",
+    globals: true,
+    setupFiles: ["./tests/setup.js"],
+    include: ["./tests/**/*.test.js"],
+    hookTimeout: 120000,
+    testTimeout: 30000,
+    clearMocks: true,
+    restoreMocks: true
+  }
+});

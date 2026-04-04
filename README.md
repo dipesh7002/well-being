@@ -125,6 +125,56 @@ Or from the root:
 npm run dev
 ```
 
+## Testing
+
+This repo includes test setup for the frontend, backend, and AI service.
+
+### Install test dependencies
+
+Frontend:
+
+```bash
+cd client && npm install
+```
+
+Backend:
+
+```bash
+cd server && npm install
+```
+
+AI service:
+
+```bash
+python3 -m pip install -r ai-service/requirements-dev.txt
+```
+
+### Run tests
+
+All suites from the project root:
+
+```bash
+npm test
+```
+
+Frontend only:
+
+```bash
+cd client && npm run test:run
+```
+
+Backend only:
+
+```bash
+cd server && npm run test:run
+```
+
+AI service only:
+
+```bash
+PYTHONPATH=ai-service ./ai-service/.venv/bin/python -m pytest ai-service/tests -q
+```
+
 Frontend:
 
 - `http://localhost:5173`

@@ -8,4 +8,8 @@ coverage
 client/node_modules
 client/dist
 server/node_modules
-
+.codex
+*.codex
+.pytest_cache
+.venv
+ai-service/.venv

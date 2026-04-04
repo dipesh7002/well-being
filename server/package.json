@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
-    "check": "node --check src/server.js"
+    "check": "node --check src/server.js",
+    "test": "TZ=UTC vitest",
+    "test:run": "TZ=UTC vitest run",
+    "coverage": "TZ=UTC vitest run --coverage"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -22,7 +25,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "mongodb-memory-server": "^10.1.2",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.8"
   }
 }
-
