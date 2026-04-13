@@ -1,5 +1,7 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { NotificationBar } from "../common/NotificationBar";
+import { ReminderBanner } from "../common/ReminderBanner";
 
 const navigationByRole = {
   user: [
@@ -95,6 +97,8 @@ export function AppShell() {
               <span>Supportive tool only</span>
             </div>
           </header>
+          <NotificationBar />
+          <ReminderBanner />
           <Outlet />
         </main>
       </div>

@@ -15,6 +15,13 @@ export function formatDateInput(value) {
   return new Date(value).toISOString().slice(0, 10);
 }
 
+export function countWords(text = "") {
+  return text
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length;
+}
+
 export function getMoodMeta(mood) {
   return moodMeta[mood] || moodMeta.neutral;
 }

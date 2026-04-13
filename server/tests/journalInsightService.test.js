@@ -4,8 +4,10 @@ import { Suggestion } from "../src/models/Suggestion.js";
 import {
   analyzeJournalText,
   detectDistressLanguage,
+  getHistoryBasedSuggestion,
   getSuggestionForMood
 } from "../src/services/journalInsightService.js";
+import { createJournalEntry, createUser } from "./helpers/factories.js";
 
 describe("journalInsightService", () => {
   it("returns null analysis when AI is turned off or the text is empty", async () => {
@@ -13,11 +15,27 @@ describe("journalInsightService", () => {
 
     await expect(analyzeJournalText("")).resolves.toEqual({
       detectedMood: null,
-      sentimentScore: null
+      sentimentScore: null,
+      signals: {
+        anxious: 0,
+        stressed: 0,
+        sad: 0,
+        calm: 0,
+        happy: 0
+      },
+      analysisSource: "off"
     });
     await expect(analyzeJournalText("Today felt okay")).resolves.toEqual({
       detectedMood: null,
-      sentimentScore: null
+      sentimentScore: null,
+      signals: {
+        anxious: 0,
+        stressed: 0,
+        sad: 0,
+        calm: 0,
+        happy: 0
+      },
+      analysisSource: "off"
     });
   });
 
@@ -28,6 +46,8 @@ describe("journalInsightService", () => {
 
     expect(result.detectedMood).toBe("anxious");
     expect(result.sentimentScore).toBeLessThan(0);
+    expect(result.analysisSource).toBe("internal");
+    expect(result.signals.anxious).toBeGreaterThan(0);
   });
 
   it("uses the Python AI result when the external service succeeds", async () => {
@@ -38,13 +58,28 @@ describe("journalInsightService", () => {
       ok: true,
       json: async () => ({
         detectedMood: "calm",
-        sentimentScore: 0.71
+        sentimentScore: 0.71,
+        signals: {
+          anxious: 0,
+          stressed: 0,
+          sad: 0,
+          calm: 2,
+          happy: 0
+        }
       })
     });
 
     await expect(analyzeJournalText("Today felt steady and light.")).resolves.toEqual({
       detectedMood: "calm",
-      sentimentScore: 0.71
+      sentimentScore: 0.71,
+      signals: {
+        anxious: 0,
+        stressed: 0,
+        sad: 0,
+        calm: 2,
+        happy: 0
+      },
+      analysisSource: "python"
     });
   });
 
@@ -58,6 +93,7 @@ describe("journalInsightService", () => {
 
     expect(result.detectedMood).toBe("stressed");
     expect(result.sentimentScore).toBeLessThan(0);
+    expect(result.analysisSource).toBe("internal");
   });
 
   it("detects distress language and returns the configured resource link", () => {
@@ -86,6 +122,45 @@ describe("journalInsightService", () => {
     await expect(getSuggestionForMood("neutral")).resolves.toMatchObject({
       mood: "neutral",
       title: "Take a gentle pause"
+    });
+  });
+
+  it("builds history-based suggestions from repeated recent patterns", async () => {
+    const user = await createUser();
+
+    await createJournalEntry({
+      user,
+      entryDate: new Date("2024-09-06T12:00:00.000Z"),
+      text: "I feel overloaded and tense today with too much on my plate.",
+      manualMood: "stressed",
+      finalMood: "stressed",
+      wordCount: 26
+    });
+    await createJournalEntry({
+      user,
+      entryDate: new Date("2024-09-05T12:00:00.000Z"),
+      text: "I still feel stressed and burned out by the pressure this week.",
+      manualMood: "stressed",
+      finalMood: "stressed",
+      wordCount: 21
+    });
+    await createJournalEntry({
+      user,
+      entryDate: new Date("2024-09-04T12:00:00.000Z"),
+      text: "Today was calm enough to breathe again.",
+      manualMood: "calm",
+      finalMood: "calm",
+      wordCount: 8
+    });
+
+    await expect(
+      getHistoryBasedSuggestion({
+        userId: user._id,
+        includeDrafts: false
+      })
+    ).resolves.toMatchObject({
+      title: "Protect a short recovery pocket",
+      reason: "Based on repeated stress showing up across your recent entries."
     });
   });
 });

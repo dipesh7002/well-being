@@ -1,5 +1,16 @@
 import mongoose from "mongoose";
 
+const emotionSignalsSchema = new mongoose.Schema(
+  {
+    anxious: { type: Number, default: 0 },
+    stressed: { type: Number, default: 0 },
+    sad: { type: Number, default: 0 },
+    calm: { type: Number, default: 0 },
+    happy: { type: Number, default: 0 }
+  },
+  { _id: false }
+);
+
 const journalEntrySchema = new mongoose.Schema(
   {
     userId: {
@@ -26,6 +37,10 @@ const journalEntrySchema = new mongoose.Schema(
       type: String,
       default: null
     },
+    emotionSignals: {
+      type: emotionSignalsSchema,
+      default: () => ({})
+    },
     finalMood: {
       type: String,
       required: true
@@ -38,6 +53,15 @@ const journalEntrySchema = new mongoose.Schema(
     sentimentScore: {
       type: Number,
       default: null
+    },
+    analysisSource: {
+      type: String,
+      enum: ["python", "internal", "off"],
+      default: "off"
+    },
+    wordCount: {
+      type: Number,
+      default: 0
     },
     promptUsed: {
       type: String,

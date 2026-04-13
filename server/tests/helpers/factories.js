@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { env } from "../../src/config/env.js";
 import { JournalEntry } from "../../src/models/JournalEntry.js";
 import { User } from "../../src/models/User.js";
+import { countWords } from "../../src/utils/text.js";
 
 export async function createUser(overrides = {}) {
   const password = overrides.password || "Password123!";
@@ -26,16 +27,26 @@ export async function createUser(overrides = {}) {
 
 export async function createJournalEntry(overrides = {}) {
   const user = overrides.user || (await createUser());
+  const text = overrides.text || "I am checking in with myself today.";
 
   return JournalEntry.create({
     userId: overrides.userId || user._id,
     entryDate: overrides.entryDate || new Date(),
-    text: overrides.text || "I am checking in with myself today.",
+    text,
     manualMood: overrides.manualMood || "neutral",
     detectedMood: overrides.detectedMood || null,
+    emotionSignals: overrides.emotionSignals || {
+      anxious: 0,
+      stressed: 0,
+      sad: 0,
+      calm: 0,
+      happy: 0
+    },
     finalMood: overrides.finalMood || overrides.manualMood || "neutral",
     status: overrides.status || "final",
     sentimentScore: overrides.sentimentScore || null,
+    analysisSource: overrides.analysisSource || "internal",
+    wordCount: overrides.wordCount ?? countWords(text),
     promptUsed: overrides.promptUsed || "",
     deletedAt: overrides.deletedAt || null
   });

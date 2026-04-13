@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { http } from "../api/http";
 import { Card } from "../components/common/Card";
 import { useAuth } from "../hooks/useAuth";
+import { useNotification } from "../hooks/useNotification";
 
 const themeChoices = [
   { value: "sunrise", label: "Sunrise" },
@@ -11,6 +12,7 @@ const themeChoices = [
 
 export function SettingsPage() {
   const { updateUser, user } = useAuth();
+  const { notify } = useNotification();
   const [form, setForm] = useState(null);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -44,6 +46,11 @@ export function SettingsPage() {
     try {
       const response = await http.put("/settings", form);
       setMessage(response.data.message);
+      notify({
+        type: "success",
+        title: "Settings updated",
+        message: "Your reminder, sharing, and theme preferences were saved."
+      });
       updateUser({
         ...user,
         fullName: response.data.settings.fullName,
@@ -54,6 +61,11 @@ export function SettingsPage() {
       });
     } catch (submissionError) {
       setError(submissionError.response?.data?.message || "Unable to update settings.");
+      notify({
+        type: "error",
+        title: "Unable to update settings",
+        message: submissionError.response?.data?.message || "Please try saving your settings again."
+      });
     }
   }
 

@@ -72,6 +72,33 @@ export function AnalyticsPage() {
           </div>
         </Card>
       </section>
+
+      <Card title="Word count insight" subtitle="Simple writing-length trends across your completed reflections.">
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="rounded-[28px] bg-orange-50 p-4">
+            <p className="text-sm text-stone-500">Latest</p>
+            <p className="mt-2 text-2xl font-semibold text-stone-900">{data.wordInsights.latest}</p>
+            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-400">words</p>
+          </div>
+          <div className="rounded-[28px] bg-amber-50 p-4">
+            <p className="text-sm text-stone-500">Average</p>
+            <p className="mt-2 text-2xl font-semibold text-stone-900">{data.wordInsights.average}</p>
+            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-400">words</p>
+          </div>
+          <div className="rounded-[28px] bg-rose-50 p-4">
+            <p className="text-sm text-stone-500">Longest</p>
+            <p className="mt-2 text-2xl font-semibold text-stone-900">{data.wordInsights.longest}</p>
+            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-400">words</p>
+          </div>
+          <div className="rounded-[28px] bg-stone-50 p-4">
+            <p className="text-sm text-stone-500">Trend</p>
+            <p className="mt-2 text-2xl font-semibold capitalize text-stone-900">{data.wordInsights.trend}</p>
+            <p className="mt-1 text-xs uppercase tracking-[0.18em] text-stone-400">
+              total {data.wordInsights.totalWords} words
+            </p>
+          </div>
+        </div>
+      </Card>
     </div>
   );
 }

@@ -3,15 +3,14 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "npm run dev --prefix server & npm run dev --prefix client",
-    "dev:ai": "python3 -m uvicorn app:app --reload --app-dir ai-service --port 8000",
-    "dev:client": "npm run dev --prefix client",
-    "dev:server": "npm run dev --prefix server",
-    "build": "npm run build --prefix client",
-    "start": "npm run start --prefix server",
-    "test": "npm run test:client && npm run test:server && npm run test:ai",
-    "test:client": "npm run test:run --prefix client",
-    "test:server": "npm run test:run --prefix server",
-    "test:ai": "PYTHONPATH=ai-service ./ai-service/.venv/bin/python -m pytest ai-service/tests -q"
+    "dev:ai": "python -m uvicorn app:app --reload --app-dir ai-service --port 8000",
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server run start",
+    "test": "npm --prefix client run test:run && npm --prefix server run test:run && python -m pytest ai-service/tests -q",
+    "test:client": "npm --prefix client run test:run",
+    "test:server": "npm --prefix server run test:run",
+    "test:ai": "python -m pytest ai-service/tests -q"
   }
 }

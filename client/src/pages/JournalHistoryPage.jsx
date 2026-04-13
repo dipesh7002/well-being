@@ -5,6 +5,7 @@ import { Card } from "../components/common/Card";
 import { EmptyState } from "../components/common/EmptyState";
 import { moodOptions } from "../data/moodMeta";
 import { useAuth } from "../hooks/useAuth";
+import { useNotification } from "../hooks/useNotification";
 import { formatFriendlyDate, getMoodMeta } from "../lib/utils";
 
 const defaultFilters = {
@@ -16,6 +17,7 @@ const defaultFilters = {
 
 export function JournalHistoryPage() {
   const { user } = useAuth();
+  const { notify } = useNotification();
   const [filters, setFilters] = useState(defaultFilters);
   const [entries, setEntries] = useState([]);
   const [helpers, setHelpers] = useState([]);
@@ -70,9 +72,20 @@ export function JournalHistoryPage() {
 
     try {
       await http.delete(`/journals/${entryId}`);
+      notify({
+        type: "success",
+        title: "Entry deleted",
+        message: "The journal entry was removed from your history."
+      });
+      window.dispatchEvent(new Event("journal:updated"));
       loadEntries();
     } catch (deleteError) {
       setError(deleteError.response?.data?.message || "Unable to delete entry.");
+      notify({
+        type: "error",
+        title: "Unable to delete entry",
+        message: deleteError.response?.data?.message || "Please try deleting this entry again."
+      });
     }
   }
 
@@ -82,9 +95,17 @@ export function JournalHistoryPage() {
 
     try {
       await http.post(`/journals/${entryId}/share`, { helperId });
-      window.alert("Entry shared successfully.");
+      notify({
+        type: "success",
+        title: "Entry shared",
+        message: "The selected helper can now view this shared journal entry."
+      });
     } catch (errorResponse) {
-      window.alert(errorResponse.response?.data?.message || "Unable to share entry.");
+      notify({
+        type: "error",
+        title: "Unable to share entry",
+        message: errorResponse.response?.data?.message || "Please try sharing the entry again."
+      });
     }
   }
 

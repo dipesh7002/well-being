@@ -17,7 +17,7 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET,
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || "7d",
   clientUrl: process.env.CLIENT_URL || "http://localhost:5173",
-  aiMode: process.env.AI_MODE || "off",
+  aiMode: process.env.AI_MODE || "internal",
   pythonAiUrl: process.env.PYTHON_AI_URL || "",
   backupEnabled: process.env.BACKUP_ENABLED === "true",
   resourceUrl:

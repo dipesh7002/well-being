@@ -34,6 +34,11 @@ export function DashboardPage() {
   }
 
   const mood = getMoodMeta(data.moodOverview.recentMood || "neutral");
+  const wordTrendLabel = {
+    up: "upward",
+    down: "downward",
+    steady: "steady"
+  }[data.wordInsight.trend || "steady"];
 
   return (
     <div className="space-y-4">
@@ -96,6 +101,11 @@ export function DashboardPage() {
           <div className="rounded-[28px] bg-rose-50 p-5">
             <h3 className="text-lg font-semibold text-stone-800">{data.selfCareSuggestion.title}</h3>
             <p className="mt-2 text-sm leading-7 text-stone-600">{data.selfCareSuggestion.description}</p>
+            {data.selfCareSuggestion.reason ? (
+              <p className="mt-3 text-sm font-medium text-stone-500">
+                Why this suggestion: {data.selfCareSuggestion.reason}
+              </p>
+            ) : null}
             {data.selfCareSuggestion.resourceLink ? (
               <a
                 className="mt-4 inline-flex text-sm font-semibold text-orange-600"
@@ -110,12 +120,28 @@ export function DashboardPage() {
         </Card>
       </section>
 
-      <section className="grid gap-4 xl:grid-cols-2">
+      <section className="grid gap-4 xl:grid-cols-[1.35fr_0.95fr_0.9fr]">
         <Card title="Mood trend" subtitle="How your completed entries have shifted recently.">
           <MoodTrendChart data={data.analyticsPreview.dailyTrend} />
         </Card>
         <Card title="Mood distribution" subtitle="A summary of your completed moods so far.">
           <MoodDistributionChart distribution={data.moodOverview.distribution} />
+        </Card>
+        <Card title="Word count insight" subtitle="A simple reflection on how much you’ve been writing.">
+          <div className="grid gap-3">
+            <div className="rounded-[24px] bg-orange-50 p-4">
+              <p className="text-sm text-stone-500">Latest entry</p>
+              <p className="mt-2 text-2xl font-semibold text-stone-900">{data.wordInsight.latest} words</p>
+            </div>
+            <div className="rounded-[24px] bg-amber-50 p-4">
+              <p className="text-sm text-stone-500">Recent average</p>
+              <p className="mt-2 text-2xl font-semibold text-stone-900">{data.wordInsight.recentAverage} words</p>
+            </div>
+            <p className="text-sm leading-7 text-stone-500">
+              Your writing volume is trending <span className="font-semibold text-stone-700">{wordTrendLabel}</span>,
+              with an average of {data.wordInsight.average} words and a longest recent entry of {data.wordInsight.longest} words.
+            </p>
+          </div>
         </Card>
       </section>
 

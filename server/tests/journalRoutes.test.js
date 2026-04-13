@@ -41,17 +41,22 @@ describe("journal routes", () => {
     expect(response.body.entry).toMatchObject({
       manualMood: "happy",
       finalMood: "happy",
-      status: "final"
+      status: "final",
+      analysisSource: "internal"
     });
     expect(response.body.suggestion.title).toBe("Celebrate and reinforce the moment");
+    expect(response.body.suggestion.reason).toBe("Based on your recent mood pattern and latest entry.");
     expect(response.body.distressSupport).toMatchObject({
       title: "Extra support may help right now",
       resourceLink: env.resourceUrl
     });
-    expect(response.body.entry.detectedMood).toBe("happy");
+    expect(response.body.entry.detectedMood).toBe("sad");
+    expect(response.body.entry.wordCount).toBeGreaterThan(0);
+    expect(response.body.entry.emotionSignals.sad).toBeGreaterThan(0);
   });
 
   it("updates and lists a user's entries", async () => {
+    env.aiMode = "off";
     const user = await createUser();
     const entry = await createJournalEntry({
       user,
@@ -76,8 +81,11 @@ describe("journal routes", () => {
       text: "Updated text",
       manualMood: "calm",
       finalMood: "calm",
-      status: "draft"
+      status: "draft",
+      analysisSource: "off",
+      wordCount: 2
     });
+    expect(updateResponse.body.suggestion.reason).toBe("Based on your recent mood pattern and latest entry.");
 
     const listResponse = await request(app).get("/api/journals?mood=calm").set(authHeaders(user));
 
@@ -85,11 +93,13 @@ describe("journal routes", () => {
     expect(listResponse.body.pagination.total).toBe(1);
     expect(listResponse.body.entries[0]).toMatchObject({
       _id: entry._id.toString(),
-      manualMood: "calm"
+      manualMood: "calm",
+      wordCount: 2
     });
   });
 
   it("shares an entry with an active helper when consent is enabled", async () => {
+    env.aiMode = "off";
     const user = await createUser({
       fullName: "Sharer",
       consentSettings: {

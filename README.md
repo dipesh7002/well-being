@@ -8,10 +8,10 @@ This product is a supportive well-being tool only. It is not a medical device, n
 
 - Frontend: React + Vite + Tailwind CSS + Recharts
 - Backend: Node.js + Express
-- AI microservice: Python + FastAPI + NLTK VADER
+- AI microservice: Python + FastAPI + NLTK VADER (pretrained sentiment analysis)
 - Database: MongoDB + Mongoose
 - Auth: JWT + bcryptjs
-- Optional AI hook: internal rule-based mood detection with a pluggable Python service endpoint
+- AI strategy: pretrained Python mood analysis first, with an explainable internal rule-based fallback
 
 ## Key Features
 
@@ -22,9 +22,12 @@ This product is a supportive well-being tool only. It is not a medical device, n
 - Manual mood tracking with emoji-based selection
 - Dashboard with streaks, badges, reminders, prompts, suggestions, and mood charts
 - Journal drafts and final entries
-- Guided writing prompts and mood-based self-care suggestions
+- Guided writing prompts and history-aware self-care suggestions
 - Streaks and badges based on completed journaling days
+- Pretrained AI emotion detection with visible mood signals and sentiment scores
 - Distress-language detection with calm resource messaging
+- Word count insight for live entry writing and recent writing patterns
+- In-app notification bar plus visible reminder banner
 - Settings for theme, reminders, and helper-sharing consent
 - Admin dashboard with anonymized aggregated analytics and account activation controls
 - Helper dashboard for consent-based shared entries and supportive feedback
@@ -62,7 +65,7 @@ This product is a supportive well-being tool only. It is not a medical device, n
 
 ### 1. Install dependencies
 
-From the project root:
+Install dependencies separately for the backend and frontend:
 
 ```bash
 cd server && npm install
@@ -84,6 +87,12 @@ Update `server/.env` as needed:
 - `AI_MODE`
 - `PYTHON_AI_URL` if using an external Python mood service
 
+Recommended AI setup:
+
+- `AI_MODE=python` uses the pretrained VADER-powered Python analyzer
+- `AI_MODE=internal` uses the built-in explainable fallback
+- if `AI_MODE` is not set, the server defaults to the internal analyzer so mood detection still works
+
 ### 3. Optional: install the Python AI service
 
 ```bash
@@ -99,6 +108,8 @@ To use the AI service, set this in `server/.env`:
 AI_MODE=python
 PYTHON_AI_URL=http://127.0.0.1:8000/analyze
 ```
+
+If the Python service is unavailable, the backend falls back to its internal rule-based analyzer so saves still work.
 
 ### 4. Start MongoDB
 
@@ -117,12 +128,6 @@ If you want the Python AI service too:
 
 ```bash
 npm run dev:ai
-```
-
-Or from the root:
-
-```bash
-npm run dev
 ```
 
 ## Testing
@@ -172,7 +177,7 @@ cd server && npm run test:run
 AI service only:
 
 ```bash
-PYTHONPATH=ai-service ./ai-service/.venv/bin/python -m pytest ai-service/tests -q
+python -m pytest ai-service/tests -q
 ```
 
 Frontend:
@@ -250,8 +255,16 @@ The app works fully without AI.
 
 When AI is enabled:
 
-- `AI_MODE=internal` uses a built-in rule-based sentiment and mood guesser
-- `AI_MODE=python` sends text to the included FastAPI mood service and falls back to internal analysis if unavailable
+- `AI_MODE=python` uses the included FastAPI service with pretrained NLTK VADER sentiment analysis and phrase-level emotion signals
+- `AI_MODE=internal` uses a built-in rule-based fallback that stays explainable and available even if the Python service is down
+
+After saving an entry, the app now surfaces:
+
+- detected mood
+- sentiment score
+- matched emotion signals
+- history-aware self-care suggestions
+- word count insight
 
 Distress support is informational only:
 

@@ -34,7 +34,17 @@ describe("JournalEditorPage", () => {
       _id: "entry-1",
       status: "final",
       finalMood: "happy",
-      detectedMood: "calm"
+      detectedMood: "calm",
+      analysisSource: "python",
+      sentimentScore: 0.68,
+      wordCount: 8,
+      emotionSignals: {
+        anxious: 0,
+        stressed: 0,
+        sad: 0,
+        calm: 2,
+        happy: 1
+      }
     };
 
     http.get.mockImplementation((url) => {
@@ -70,7 +80,8 @@ describe("JournalEditorPage", () => {
         entry: createdEntry,
         suggestion: {
           title: "Protect the good moment",
-          description: "Name one thing that helped today go well."
+          description: "Name one thing that helped today go well.",
+          reason: "Based on your recent mood pattern and latest entry."
         },
         distressSupport: null
       }
@@ -82,7 +93,7 @@ describe("JournalEditorPage", () => {
 
     await user.click(screen.getByRole("button", { name: /Happy/ }));
     await user.type(
-      screen.getByRole("textbox", { name: "Journal text" }),
+      screen.getByRole("textbox", { name: /Journal text/i }),
       "I felt proud of a calm, productive afternoon."
     );
     await user.click(screen.getByRole("button", { name: "Save final entry" }));
@@ -103,6 +114,9 @@ describe("JournalEditorPage", () => {
     expect(await screen.findByText("Entry saved")).toBeInTheDocument();
     expect(screen.getByText("Saved as final")).toBeInTheDocument();
     expect(screen.getByText("Protect the good moment")).toBeInTheDocument();
+    expect(screen.getByText("AI emotion analysis")).toBeInTheDocument();
+    expect(screen.getByText("Pretrained VADER analysis")).toBeInTheDocument();
+    expect(screen.getAllByText("8 words").length).toBeGreaterThan(0);
   });
 
   it("loads an existing entry and updates it as a draft", async () => {
@@ -144,11 +158,22 @@ describe("JournalEditorPage", () => {
           _id: "entry-42",
           status: "draft",
           finalMood: "stressed",
-          detectedMood: "stressed"
+          detectedMood: "stressed",
+          analysisSource: "internal",
+          sentimentScore: -0.44,
+          wordCount: 10,
+          emotionSignals: {
+            anxious: 0,
+            stressed: 2,
+            sad: 1,
+            calm: 0,
+            happy: 0
+          }
         },
         suggestion: {
           title: "Take a short reset break",
-          description: "Step away and loosen your shoulders for one minute."
+          description: "Step away and loosen your shoulders for one minute.",
+          reason: "Based on repeated stress showing up across your recent entries."
         },
         distressSupport: {
           title: "Extra support may help right now",
@@ -162,7 +187,7 @@ describe("JournalEditorPage", () => {
 
     expect(await screen.findByDisplayValue("I felt overloaded in the morning.")).toBeInTheDocument();
 
-    const textarea = screen.getByRole("textbox", { name: "Journal text" });
+    const textarea = screen.getByRole("textbox", { name: /Journal text/i });
     await user.clear(textarea);
     await user.type(textarea, "I felt hopeless earlier, but I am slowing things down.");
     await user.click(screen.getByRole("button", { name: "Save draft" }));
@@ -181,6 +206,8 @@ describe("JournalEditorPage", () => {
 
     expect(await screen.findByText("Entry saved")).toBeInTheDocument();
     expect(screen.getByText("Saved as draft")).toBeInTheDocument();
+    expect(screen.getByText("Rule-based fallback analysis")).toBeInTheDocument();
+    expect(screen.getByText("Why this suggestion: Based on repeated stress showing up across your recent entries.")).toBeInTheDocument();
     expect(screen.getByText("Extra support may help right now")).toBeInTheDocument();
   });
 });

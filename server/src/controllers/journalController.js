@@ -6,10 +6,11 @@ import { User } from "../models/User.js";
 import {
   analyzeJournalText,
   detectDistressLanguage,
-  getSuggestionForMood
+  getHistoryBasedSuggestion
 } from "../services/journalInsightService.js";
 import { recomputeUserProgress } from "../services/streakService.js";
 import { normalizeEntryDate } from "../utils/date.js";
+import { countWords } from "../utils/text.js";
 import { ROLES } from "../utils/constants.js";
 
 function buildEntryQuery(userId, filters) {
@@ -93,6 +94,7 @@ export async function createEntry(req, res, next) {
     const data = matchedData(req);
     const analysis = await analyzeJournalText(data.text);
     const finalMood = data.finalMood || data.manualMood;
+    const wordCount = countWords(data.text);
 
     const entry = await JournalEntry.create({
       userId: req.user._id,
@@ -100,15 +102,21 @@ export async function createEntry(req, res, next) {
       text: data.text,
       manualMood: data.manualMood,
       detectedMood: analysis.detectedMood,
+      emotionSignals: analysis.signals,
       finalMood,
       status: data.status || "final",
       sentimentScore: analysis.sentimentScore,
+      analysisSource: analysis.analysisSource,
+      wordCount,
       promptUsed: data.promptUsed || ""
     });
 
     const [userProgress, suggestion] = await Promise.all([
       recomputeUserProgress(req.user._id),
-      getSuggestionForMood(finalMood)
+      getHistoryBasedSuggestion({
+        userId: req.user._id,
+        includeDrafts: entry.status === "draft"
+      })
     ]);
 
     return res.status(201).json({
@@ -137,20 +145,27 @@ export async function updateEntry(req, res, next) {
     }
 
     const analysis = await analyzeJournalText(data.text);
+    const wordCount = countWords(data.text);
     entry.entryDate = normalizeEntryDate(data.entryDate);
     entry.text = data.text;
     entry.manualMood = data.manualMood;
     entry.detectedMood = analysis.detectedMood;
+    entry.emotionSignals = analysis.signals;
     entry.finalMood = data.finalMood || data.manualMood;
     entry.status = data.status || entry.status;
     entry.sentimentScore = analysis.sentimentScore;
+    entry.analysisSource = analysis.analysisSource;
+    entry.wordCount = wordCount;
     entry.promptUsed = data.promptUsed || entry.promptUsed;
 
     await entry.save();
 
     const [userProgress, suggestion] = await Promise.all([
       recomputeUserProgress(req.user._id),
-      getSuggestionForMood(entry.finalMood)
+      getHistoryBasedSuggestion({
+        userId: req.user._id,
+        includeDrafts: entry.status === "draft"
+      })
     ]);
 
     return res.json({

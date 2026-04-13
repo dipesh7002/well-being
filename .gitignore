@@ -11,5 +11,6 @@ server/node_modules
 .codex
 *.codex
 .pytest_cache
+pytest-cache-files-*
 .venv
 ai-service/.venv

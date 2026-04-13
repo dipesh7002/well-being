@@ -1,3 +1,4 @@
+import path from "node:path";
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
@@ -10,6 +11,9 @@ process.env.AI_MODE = process.env.AI_MODE || "off";
 process.env.PYTHON_AI_URL = process.env.PYTHON_AI_URL || "http://127.0.0.1:8000/analyze";
 process.env.RESOURCE_URL = process.env.RESOURCE_URL || "https://example.com/support";
 process.env.SEED_DEMO_ACCOUNTS = "false";
+process.env.MONGOMS_PREFER_GLOBAL_PATH = "false";
+process.env.MONGOMS_DOWNLOAD_DIR =
+  process.env.MONGOMS_DOWNLOAD_DIR || path.resolve(process.cwd(), ".cache", "mongodb-binaries");
 
 let mongoServer;
 

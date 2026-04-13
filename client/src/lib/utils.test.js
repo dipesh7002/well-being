@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cn, formatDateInput, formatFriendlyDate, getMoodMeta, toTitleCase } from "./utils";
+import { cn, countWords, formatDateInput, formatFriendlyDate, getMoodMeta, toTitleCase } from "./utils";
 
 describe("client utils", () => {
   it("joins only truthy class names", () => {
@@ -22,5 +22,9 @@ describe("client utils", () => {
 
   it("converts strings to title case", () => {
     expect(toTitleCase("well being journal")).toBe("Well Being Journal");
+  });
+
+  it("counts words using whitespace-separated text", () => {
+    expect(countWords("  A short reflective entry  ")).toBe(4);
   });
 });

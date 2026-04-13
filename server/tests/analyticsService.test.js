@@ -64,6 +64,14 @@ describe("analyticsService", () => {
       happy: 1,
       sad: 0
     });
+    expect(analytics.wordInsights).toMatchObject({
+      latest: 2,
+      average: 2,
+      recentAverage: 2,
+      longest: 3,
+      totalWords: 7,
+      trend: "steady"
+    });
   });
 
   it("builds admin analytics across users, moods, and streak buckets", async () => {

@@ -3,7 +3,8 @@ import { useParams } from "react-router-dom";
 import { http } from "../api/http";
 import { Card } from "../components/common/Card";
 import { moodOptions } from "../data/moodMeta";
-import { formatDateInput, getMoodMeta } from "../lib/utils";
+import { useNotification } from "../hooks/useNotification";
+import { countWords, formatDateInput, getMoodMeta } from "../lib/utils";
 
 const initialForm = {
   entryDate: formatDateInput(new Date()),
@@ -16,6 +17,7 @@ const initialForm = {
 
 export function JournalEditorPage() {
   const { id } = useParams();
+  const { notify } = useNotification();
   const [currentEntryId, setCurrentEntryId] = useState(id || null);
   const [form, setForm] = useState(initialForm);
   const [helper, setHelper] = useState({
@@ -76,6 +78,9 @@ export function JournalEditorPage() {
     loadEditor();
   }, [currentEntryId]);
 
+  const liveWordCount = countWords(form.text);
+  const feedbackWordCount = feedback?.entry?.wordCount ?? liveWordCount;
+
   async function handleSubmit(status) {
     setSubmitting(true);
     setFeedback(null);
@@ -101,9 +106,23 @@ export function JournalEditorPage() {
         finalMood: response.data.entry.finalMood
       }));
       setFeedback(response.data);
+      notify({
+        type: "success",
+        title: "Entry saved",
+        message:
+          status === "draft"
+            ? "Your draft is saved and ready for you to return to."
+            : "Your journal entry was saved and your insights have been refreshed."
+      });
+      window.dispatchEvent(new Event("journal:updated"));
     } catch (error) {
       setFeedback({
         error: error.response?.data?.message || "Unable to save your journal entry."
+      });
+      notify({
+        type: "error",
+        title: "Unable to save entry",
+        message: error.response?.data?.message || "Please try saving your journal entry again."
       });
     } finally {
       setSubmitting(false);
@@ -164,7 +183,10 @@ export function JournalEditorPage() {
         </div>
 
         <label className="mt-5 block">
-          <span className="mb-2 block text-sm font-medium text-stone-700">Journal text</span>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <span className="block text-sm font-medium text-stone-700">Journal text</span>
+            <span className="text-sm text-stone-500">{liveWordCount} words</span>
+          </div>
           <textarea
             className="input-base min-h-[280px] resize-y"
             value={form.text}
@@ -209,6 +231,7 @@ export function JournalEditorPage() {
                 <p className="mt-2 text-sm text-stone-500">
                   Final mood: {getMoodMeta(feedback.entry.finalMood).emoji} {getMoodMeta(feedback.entry.finalMood).label}
                 </p>
+                <p className="mt-2 text-sm text-stone-500">Word count: {feedbackWordCount} words</p>
                 {feedback.entry.detectedMood ? (
                   <p className="mt-2 text-sm text-stone-500">
                     AI suggestion: {getMoodMeta(feedback.entry.detectedMood).emoji} {getMoodMeta(feedback.entry.detectedMood).label}
@@ -218,9 +241,61 @@ export function JournalEditorPage() {
                 )}
               </div>
 
+              <div className="rounded-[28px] bg-stone-50 p-4">
+                <h3 className="font-semibold text-stone-800">AI emotion analysis</h3>
+                {feedback.entry.analysisSource === "off" || !feedback.entry.detectedMood ? (
+                  <p className="mt-2 text-sm leading-7 text-stone-600">
+                    AI analysis is turned off right now. Enable the internal or pretrained Python analyzer to see
+                    detected mood signals here.
+                  </p>
+                ) : (
+                  <div className="mt-3 space-y-3">
+                    <p className="text-sm text-stone-500">
+                      Source:{" "}
+                      <span className="font-semibold text-stone-700">
+                        {feedback.entry.analysisSource === "python"
+                          ? "Pretrained VADER analysis"
+                          : "Rule-based fallback analysis"}
+                      </span>
+                    </p>
+                    <p className="text-sm text-stone-500">
+                      Detected mood: {getMoodMeta(feedback.entry.detectedMood).emoji}{" "}
+                      {getMoodMeta(feedback.entry.detectedMood).label}
+                    </p>
+                    <p className="text-sm text-stone-500">
+                      Sentiment score:{" "}
+                      <span className="font-semibold text-stone-700">
+                        {typeof feedback.entry.sentimentScore === "number"
+                          ? `${feedback.entry.sentimentScore >= 0 ? "+" : ""}${feedback.entry.sentimentScore}`
+                          : "Not available"}
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(feedback.entry.emotionSignals || {})
+                        .filter(([, value]) => value > 0)
+                        .map(([signal, value]) => (
+                          <span key={signal} className="badge-pill">
+                            {signal} x{value}
+                          </span>
+                        ))}
+                      {!Object.values(feedback.entry.emotionSignals || {}).some((value) => value > 0) ? (
+                        <span className="text-sm text-stone-500">
+                          No strong phrase hits were found, so the model leaned on the overall sentiment score.
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               <div className="rounded-[28px] bg-rose-50 p-4">
                 <h3 className="font-semibold text-stone-800">{feedback.suggestion.title}</h3>
                 <p className="mt-2 text-sm leading-7 text-stone-600">{feedback.suggestion.description}</p>
+                {feedback.suggestion.reason ? (
+                  <p className="mt-3 text-sm font-medium text-stone-500">
+                    Why this suggestion: {feedback.suggestion.reason}
+                  </p>
+                ) : null}
               </div>
 
               {feedback.distressSupport ? (

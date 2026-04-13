@@ -1,7 +1,7 @@
 import { JournalEntry } from "../models/JournalEntry.js";
 import { getUserAnalytics } from "../services/analyticsService.js";
 import { getPromptForMood } from "../services/promptService.js";
-import { getSuggestionForMood } from "../services/journalInsightService.js";
+import { getHistoryBasedSuggestion } from "../services/journalInsightService.js";
 import { getTodayKey, toDayKey } from "../utils/date.js";
 
 export async function getDashboardSummary(req, res, next) {
@@ -32,7 +32,10 @@ export async function getDashboardSummary(req, res, next) {
     );
     const analytics = await getUserAnalytics(req.user._id);
     const prompt = await getPromptForMood(recentMood);
-    const suggestion = await getSuggestionForMood(recentMood || "neutral");
+    const suggestion = await getHistoryBasedSuggestion({
+      userId: req.user._id,
+      includeDrafts: false
+    });
 
     return res.json({
       greetingName: req.user.fullName.split(" ")[0],
@@ -57,6 +60,7 @@ export async function getDashboardSummary(req, res, next) {
       recentEntries,
       guidedPrompt: prompt,
       selfCareSuggestion: suggestion,
+      wordInsight: analytics.wordInsights,
       analyticsPreview: {
         dailyTrend: analytics.dailyTrend.slice(-14),
         weeklyTrend: analytics.weeklyTrend.slice(-8)
