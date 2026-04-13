@@ -32,8 +32,18 @@ def test_analyze_text_uses_phrase_hits_before_sentiment() -> None:
 
 
 def test_analyze_text_falls_back_to_sentiment_when_no_keywords_match() -> None:
-    positive = analyze_text("Today felt lighter and easier to carry.", FakeAnalyzer(0.72))
+    positive = analyze_text("Today felt spacious and easier to carry.", FakeAnalyzer(0.72))
     negative = analyze_text("Today felt sharp and difficult to carry.", FakeAnalyzer(-0.61))
 
     assert positive["detectedMood"] == "happy"
     assert negative["detectedMood"] == "sad"
+
+
+def test_analyze_text_prefers_calm_for_steady_language() -> None:
+    result = analyze_text(
+        "I feel grounded, steady, and peaceful after slowing down this evening.",
+        FakeAnalyzer(0.24),
+    )
+
+    assert result["detectedMood"] == "calm"
+    assert result["signals"]["calm"] >= 2
