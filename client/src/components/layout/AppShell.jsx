@@ -33,20 +33,20 @@ export function AppShell() {
 
   return (
     <div className="min-h-screen px-4 py-4 md:px-6">
-      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[280px_1fr]">
-        <aside className="surface-card overflow-hidden bg-hero-glow">
-          <div className="rounded-4xl bg-gradient-to-br from-orange-100/70 via-white/70 to-rose-100/70 p-6">
+      <div className="mx-auto grid max-w-7xl gap-4 lg:grid-cols-[18rem_minmax(0,1fr)]">
+        <aside className="surface-card overflow-hidden bg-hero-glow lg:w-72 lg:min-w-72 lg:max-w-72 lg:self-start lg:sticky lg:top-4">
+          {/* <div className="app-shell-banner"> */}
             <p className="gradient-title text-3xl">Well-Being Journal</p>
-            <p className="mt-3 text-sm text-stone-600">
+            <p className="theme-text-muted mt-3 text-sm">
               Private reflection, mood awareness, and supportive care in one calm space.
             </p>
-            <div className="mt-6 rounded-3xl bg-white/70 p-4">
-              <p className="text-xs uppercase tracking-[0.24em] text-stone-400">Signed in as</p>
-              <p className="mt-2 text-lg font-semibold text-stone-800">{user?.fullName}</p>
-              <p className="text-sm capitalize text-stone-500">{user?.role}</p>
-            </div>
-          </div>
-
+            {/* <div className="surface-panel mt-6 rounded-3xl"> */}
+            <br />
+              <p className="theme-text-faint text-xs uppercase tracking-[0.24em] pt-3">Signed in as</p>
+              <p className="theme-text mt-2 text-lg font-semibold">{user?.fullName}</p>
+              <p className="theme-text-muted text-sm capitalize">{user?.role}</p>
+            {/* </div> */}
+        {/* </div> */}
           <nav className="mt-6 flex gap-2 overflow-x-auto pb-1 lg:block">
             {navigation.map((item) => (
               <NavLink
@@ -54,10 +54,8 @@ export function AppShell() {
                 to={item.to}
                 className={({ isActive }) =>
                   [
-                    "mb-2 inline-flex min-w-max rounded-full px-4 py-2 text-sm font-medium transition-colors lg:flex",
-                    isActive
-                      ? "bg-orange-500 text-white"
-                      : "bg-white/70 text-stone-600 hover:bg-orange-50"
+                    "nav-pill",
+                    isActive ? "nav-pill-active" : "nav-pill-idle"
                   ].join(" ")
                 }
               >
@@ -66,7 +64,7 @@ export function AppShell() {
             ))}
           </nav>
 
-          <div className="mt-6 border-t border-orange-100 pt-5">
+          <div className="mt-6 border-t pt-5" style={{ borderColor: "oklch(var(--line) / 0.65)" }}>
             <button type="button" className="btn-secondary w-full" onClick={logout}>
               Log out
             </button>

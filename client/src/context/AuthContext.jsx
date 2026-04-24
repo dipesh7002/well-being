@@ -62,11 +62,7 @@ export function AuthProvider({ children }) {
       },
       async register(payload) {
         const response = await http.post("/auth/register", payload);
-        setAuthToken(response.data.token);
-        setToken(response.data.token);
-        setUser(response.data.user);
-        persistAuth(response.data);
-        return response.data.user;
+        return response.data;
       },
       async logout() {
         try {

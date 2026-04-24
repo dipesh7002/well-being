@@ -41,10 +41,8 @@ export async function register(req, res, next) {
       passwordHash
     });
 
-    const token = signToken(user._id);
-
     return res.status(201).json({
-      token,
+      message: "Account created successfully. Please log in.",
       user: buildAuthResponse(user)
     });
   } catch (error) {

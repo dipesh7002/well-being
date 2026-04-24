@@ -26,12 +26,17 @@ export function SignupPage() {
     setError("");
 
     try {
-      await register({
+      const response = await register({
         fullName: form.fullName,
         email: form.email,
         password: form.password
       });
-      navigate("/app/dashboard");
+      navigate("/login", {
+        replace: true,
+        state: {
+          message: response.message || "Account created successfully. Please log in."
+        }
+      });
     } catch (submissionError) {
       setError(submissionError.response?.data?.message || "Unable to create account.");
     } finally {

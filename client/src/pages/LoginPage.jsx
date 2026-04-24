@@ -1,13 +1,15 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
   const { login } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const successMessage = location.state?.message;
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -51,6 +53,7 @@ export function LoginPage() {
               required
             />
           </label>
+          {successMessage ? <p className="text-sm text-emerald-600">{successMessage}</p> : null}
           {error ? <p className="text-sm text-rose-500">{error}</p> : null}
           <button type="submit" className="btn-primary w-full" disabled={submitting}>
             {submitting ? "Logging in..." : "Log in"}

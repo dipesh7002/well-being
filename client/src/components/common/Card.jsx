@@ -4,8 +4,8 @@ export function Card({ title, subtitle, action, children, className = "" }) {
       {(title || subtitle || action) && (
         <div className="mb-5 flex items-start justify-between gap-3">
           <div>
-            {title ? <h2 className="text-lg font-semibold text-stone-800">{title}</h2> : null}
-            {subtitle ? <p className="mt-1 text-sm text-stone-500">{subtitle}</p> : null}
+            {title ? <h2 className="theme-text text-lg font-semibold">{title}</h2> : null}
+            {subtitle ? <p className="theme-text-muted mt-1 text-sm">{subtitle}</p> : null}
           </div>
           {action}
         </div>

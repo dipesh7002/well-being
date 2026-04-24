@@ -5,7 +5,7 @@ import { User } from "../src/models/User.js";
 import { authHeaders, createUser } from "./helpers/factories.js";
 
 describe("auth routes", () => {
-  it("registers a new user and returns a token with the safe user payload", async () => {
+  it("registers a new user without creating an authenticated session", async () => {
     const response = await request(app).post("/api/auth/register").send({
       fullName: "Niyati Kayastha",
       email: "niyati@example.com",
@@ -13,7 +13,8 @@ describe("auth routes", () => {
     });
 
     expect(response.status).toBe(201);
-    expect(response.body.token).toEqual(expect.any(String));
+    expect(response.body.token).toBeUndefined();
+    expect(response.body.message).toBe("Account created successfully. Please log in.");
     expect(response.body.user).toMatchObject({
       fullName: "Niyati Kayastha",
       email: "niyati@example.com",

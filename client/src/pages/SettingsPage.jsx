@@ -6,7 +6,7 @@ import { useNotification } from "../hooks/useNotification";
 
 const themeChoices = [
   { value: "sunrise", label: "Sunrise" },
-  { value: "soft-peach", label: "Soft Peach" },
+  { value: "soft-peach", label: "Midnight Ember" },
   { value: "rose-glow", label: "Rose Glow" }
 ];
 
@@ -82,7 +82,7 @@ export function SettingsPage() {
       <Card title="Preferences" subtitle="Personalize the tone, reminders, and sharing controls for your journaling space.">
         <form className="grid gap-5" onSubmit={handleSubmit}>
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-stone-700">Full name</span>
+            <span className="theme-text mb-2 block text-sm font-medium">Full name</span>
             <input
               className="input-base"
               value={form.fullName}
@@ -91,7 +91,7 @@ export function SettingsPage() {
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-sm font-medium text-stone-700">Theme</span>
+            <span className="theme-text mb-2 block text-sm font-medium">Theme</span>
             <select
               className="input-base"
               value={form.themePreference}
@@ -106,10 +106,10 @@ export function SettingsPage() {
           </label>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="flex items-center justify-between rounded-[28px] border border-stone-200 bg-white px-4 py-4">
+            <label className="surface-panel flex items-center justify-between px-4 py-4">
               <span>
-                <span className="block font-medium text-stone-800">Enable reminders</span>
-                <span className="text-sm text-stone-500">In-app reminder state on your dashboard.</span>
+                <span className="theme-text block font-medium">Enable reminders</span>
+                <span className="theme-text-muted text-sm">In-app reminder state on your dashboard.</span>
               </span>
               <input
                 type="checkbox"
@@ -118,7 +118,7 @@ export function SettingsPage() {
               />
             </label>
             <label className="block">
-              <span className="mb-2 block text-sm font-medium text-stone-700">Reminder time</span>
+              <span className="theme-text mb-2 block text-sm font-medium">Reminder time</span>
               <input
                 type="time"
                 className="input-base"
@@ -129,10 +129,10 @@ export function SettingsPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="flex items-center justify-between rounded-[28px] border border-stone-200 bg-white px-4 py-4">
+            <label className="surface-panel flex items-center justify-between px-4 py-4">
               <span>
-                <span className="block font-medium text-stone-800">Allow helper sharing</span>
-                <span className="text-sm text-stone-500">Enable explicit sharing of selected entries only.</span>
+                <span className="theme-text block font-medium">Allow helper sharing</span>
+                <span className="theme-text-muted text-sm">Enable explicit sharing of selected entries only.</span>
               </span>
               <input
                 type="checkbox"
@@ -142,10 +142,10 @@ export function SettingsPage() {
                 }
               />
             </label>
-            <label className="flex items-center justify-between rounded-[28px] border border-stone-200 bg-white px-4 py-4">
+            <label className="surface-panel flex items-center justify-between px-4 py-4">
               <span>
-                <span className="block font-medium text-stone-800">Share mood summaries</span>
-                <span className="text-sm text-stone-500">Allow helpers to view shared-entry mood context.</span>
+                <span className="theme-text block font-medium">Share mood summaries</span>
+                <span className="theme-text-muted text-sm">Allow helpers to view shared-entry mood context.</span>
               </span>
               <input
                 type="checkbox"
@@ -157,7 +157,7 @@ export function SettingsPage() {
             </label>
           </div>
 
-          {message ? <p className="text-sm text-emerald-600">{message}</p> : null}
+          {message ? <p className="text-sm" style={{ color: "oklch(var(--success))" }}>{message}</p> : null}
           {error ? <p className="text-sm text-rose-500">{error}</p> : null}
 
           <button type="submit" className="btn-primary w-full sm:w-fit">

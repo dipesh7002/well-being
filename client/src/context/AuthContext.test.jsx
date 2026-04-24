@@ -33,6 +33,12 @@ function AuthProbe() {
       <button type="button" onClick={() => auth.login({ email: "user@example.com", password: "Password123!" })}>
         Log in
       </button>
+      <button
+        type="button"
+        onClick={() => auth.register({ fullName: "New User", email: "new@example.com", password: "Password123!" })}
+      >
+        Register
+      </button>
       <button type="button" onClick={() => auth.logout()}>
         Log out
       </button>
@@ -134,5 +140,47 @@ describe("AuthProvider", () => {
     expect(http.post).toHaveBeenCalledWith("/auth/logout");
     expect(clearStoredAuth).toHaveBeenCalled();
     expect(setAuthToken).toHaveBeenLastCalledWith(null);
+  });
+
+  it("does not authenticate the user after registration", async () => {
+    const user = userEvent.setup();
+
+    getStoredAuth.mockReturnValue(null);
+    http.get.mockResolvedValue({
+      data: {
+        user: null
+      }
+    });
+    http.post.mockImplementation((url) => {
+      if (url === "/auth/register") {
+        return Promise.resolve({
+          data: {
+            message: "Account created successfully. Please log in.",
+            user: { fullName: "New User", email: "new@example.com" }
+          }
+        });
+      }
+
+      throw new Error(`Unexpected request: ${url}`);
+    });
+
+    renderAuthProvider();
+
+    await waitFor(() => expect(screen.getByTestId("loading")).toHaveTextContent("false"));
+    await user.click(screen.getByRole("button", { name: "Register" }));
+
+    await waitFor(() => expect(http.post).toHaveBeenCalledWith("/auth/register", {
+      fullName: "New User",
+      email: "new@example.com",
+      password: "Password123!"
+    }));
+    expect(screen.getByTestId("authenticated")).toHaveTextContent("false");
+    expect(screen.getByTestId("name")).toHaveTextContent("none");
+    expect(setAuthToken).not.toHaveBeenCalledWith("new-token");
+    expect(persistAuth).not.toHaveBeenCalledWith(
+      expect.objectContaining({
+        user: expect.objectContaining({ fullName: "New User" })
+      })
+    );
   });
 });
