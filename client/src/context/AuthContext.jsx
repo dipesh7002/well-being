@@ -64,6 +64,10 @@ export function AuthProvider({ children }) {
         const response = await http.post("/auth/register", payload);
         return response.data;
       },
+      async registerHelper(payload) {
+        const response = await http.post("/auth/register-helper", payload);
+        return response.data;
+      },
       async logout() {
         try {
           if (token) {

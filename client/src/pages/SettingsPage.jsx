@@ -105,57 +105,61 @@ export function SettingsPage() {
             </select>
           </label>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <label className="surface-panel flex items-center justify-between px-4 py-4">
-              <span>
-                <span className="theme-text block font-medium">Enable reminders</span>
-                <span className="theme-text-muted text-sm">In-app reminder state on your dashboard.</span>
-              </span>
-              <input
-                type="checkbox"
-                checked={form.reminderEnabled}
-                onChange={(event) => setForm((current) => ({ ...current, reminderEnabled: event.target.checked }))}
-              />
-            </label>
-            <label className="block">
-              <span className="theme-text mb-2 block text-sm font-medium">Reminder time</span>
-              <input
-                type="time"
-                className="input-base"
-                value={form.reminderTime}
-                onChange={(event) => setForm((current) => ({ ...current, reminderTime: event.target.value }))}
-              />
-            </label>
-          </div>
+          {user?.role === "user" && (
+            <>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="surface-panel flex items-center justify-between px-4 py-4">
+                  <span>
+                    <span className="theme-text block font-medium">Enable reminders</span>
+                    <span className="theme-text-muted text-sm">In-app reminder state on your dashboard.</span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={form.reminderEnabled}
+                    onChange={(event) => setForm((current) => ({ ...current, reminderEnabled: event.target.checked }))}
+                  />
+                </label>
+                <label className="block">
+                  <span className="theme-text mb-2 block text-sm font-medium">Reminder time</span>
+                  <input
+                    type="time"
+                    className="input-base"
+                    value={form.reminderTime}
+                    onChange={(event) => setForm((current) => ({ ...current, reminderTime: event.target.value }))}
+                  />
+                </label>
+              </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <label className="surface-panel flex items-center justify-between px-4 py-4">
-              <span>
-                <span className="theme-text block font-medium">Allow helper sharing</span>
-                <span className="theme-text-muted text-sm">Enable explicit sharing of selected entries only.</span>
-              </span>
-              <input
-                type="checkbox"
-                checked={form.allowHelperSharing}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, allowHelperSharing: event.target.checked }))
-                }
-              />
-            </label>
-            <label className="surface-panel flex items-center justify-between px-4 py-4">
-              <span>
-                <span className="theme-text block font-medium">Share mood summaries</span>
-                <span className="theme-text-muted text-sm">Allow helpers to view shared-entry mood context.</span>
-              </span>
-              <input
-                type="checkbox"
-                checked={form.shareMoodSummaries}
-                onChange={(event) =>
-                  setForm((current) => ({ ...current, shareMoodSummaries: event.target.checked }))
-                }
-              />
-            </label>
-          </div>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="surface-panel flex items-center justify-between px-4 py-4">
+                  <span>
+                    <span className="theme-text block font-medium">Allow helper sharing</span>
+                    <span className="theme-text-muted text-sm">Enable explicit sharing of selected entries only.</span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={form.allowHelperSharing}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, allowHelperSharing: event.target.checked }))
+                    }
+                  />
+                </label>
+                <label className="surface-panel flex items-center justify-between px-4 py-4">
+                  <span>
+                    <span className="theme-text block font-medium">Share mood summaries</span>
+                    <span className="theme-text-muted text-sm">Allow helpers to view shared-entry mood context.</span>
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={form.shareMoodSummaries}
+                    onChange={(event) =>
+                      setForm((current) => ({ ...current, shareMoodSummaries: event.target.checked }))
+                    }
+                  />
+                </label>
+              </div>
+            </>
+          )}
 
           {message ? <p className="text-sm" style={{ color: "oklch(var(--success))" }}>{message}</p> : null}
           {error ? <p className="text-sm text-rose-500">{error}</p> : null}

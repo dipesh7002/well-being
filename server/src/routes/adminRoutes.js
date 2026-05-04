@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { getAdminOverview, listUsers, updateUserStatus } from "../controllers/adminController.js";
+import { deleteUser, getAdminOverview, listUsers, updateUserRole, updateUserStatus } from "../controllers/adminController.js";
 import { authorize, protect } from "../middleware/auth.js";
 import { handleValidation } from "../middleware/validate.js";
 import { ROLES } from "../utils/constants.js";
@@ -16,3 +16,10 @@ adminRouter.patch(
   handleValidation,
   updateUserStatus
 );
+adminRouter.patch(
+  "/users/:id/role",
+  [body("role").isIn(["user", "helper", "admin"]).withMessage("Invalid role.")],
+  handleValidation,
+  updateUserRole
+);
+adminRouter.delete("/users/:id", deleteUser);

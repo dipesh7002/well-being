@@ -31,7 +31,7 @@ if (env.nodeEnv !== "test") {
 }
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 0,
   max: 20,
   standardHeaders: true,
   legacyHeaders: false,

@@ -80,6 +80,27 @@ export async function getCurrentUser(req, res) {
   });
 }
 
+export async function registerHelper(req, res, next) {
+  try {
+    const { fullName, email, password } = matchedData(req);
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ message: "An account with that email already exists." });
+    }
+
+    const passwordHash = await User.hashPassword(password);
+    const user = await User.create({ fullName, email, passwordHash, role: "helper" });
+
+    return res.status(201).json({
+      message: "Helper account created successfully. Please log in.",
+      user: buildAuthResponse(user)
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function logout(req, res) {
   return res.json({ message: "Logged out successfully." });
 }

@@ -60,3 +60,46 @@ export async function updateUserStatus(req, res, next) {
   }
 }
 
+export async function updateUserRole(req, res, next) {
+  try {
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(403).json({ message: "You cannot change your own role." });
+    }
+
+    const { role } = req.body;
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    user.role = role;
+    await user.save();
+
+    return res.json({
+      message: `Role updated to ${role}.`,
+      user: { _id: user._id, fullName: user.fullName, email: user.email, role: user.role }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function deleteUser(req, res, next) {
+  try {
+    if (req.params.id === req.user._id.toString()) {
+      return res.status(403).json({ message: "You cannot delete your own account." });
+    }
+
+    const user = await User.findByIdAndDelete(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
+    return res.json({ message: `User ${user.fullName} deleted successfully.` });
+  } catch (error) {
+    next(error);
+  }
+}
+

@@ -277,3 +277,18 @@
     color: color-mix(in oklab, oklch(var(--muted)) 72%, white);
   }
 }
+
+@keyframes breathe-expand {
+  from { transform: scale(1); }
+  to   { transform: scale(1.35); }
+}
+
+@keyframes breathe-contract {
+  from { transform: scale(1.35); }
+  to   { transform: scale(1); }
+}
+
+@keyframes breathe-hold {
+  from { transform: scale(1.35); }
+  to   { transform: scale(1.35); }
+}

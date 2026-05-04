@@ -202,6 +202,22 @@ export async function deleteEntry(req, res, next) {
   }
 }
 
+export async function getMyFeedback(req, res, next) {
+  try {
+    const records = await SharedAccess.find({
+      userId: req.user._id,
+      "helperFeedback.0": { $exists: true }
+    })
+      .populate("helperId", "fullName")
+      .populate("sharedEntryIds", "entryDate finalMood text")
+      .lean();
+
+    return res.json({ feedback: records });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function shareEntryWithHelper(req, res, next) {
   try {
     const { helperId } = matchedData(req);

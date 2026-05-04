@@ -13,7 +13,7 @@ function formatReminderTime(value) {
   return `${displayHour}:${minutes} ${meridiem}`;
 }
 
-export function ReminderBanner() {
+export function ReminderBanner({ onlyWhenNeeded = false }) {
   const { user } = useAuth();
   const location = useLocation();
   const [status, setStatus] = useState({
@@ -67,18 +67,20 @@ export function ReminderBanner() {
     };
   }, [location.pathname, user?.reminderEnabled, user?.reminderTime]);
 
-  if (!user?.reminderEnabled) {
-    return null;
-  }
+  if (!user?.reminderEnabled) return null;
+  if (onlyWhenNeeded && !status.needsAttention) return null;
 
   const reminderTime = formatReminderTime(status.reminderTime);
 
   return (
-    <div className="surface-card-muted rounded-[30px] border border-orange-200 bg-orange-50/80">
+    <div
+      className="surface-card rounded-[30px] border"
+      style={{ borderColor: "oklch(var(--primary) / 0.35)" }}
+    >
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <p className="text-sm font-semibold text-stone-800">Reflection reminder</p>
-          <p className="mt-1 text-sm leading-6 text-stone-600">
+          <p className="theme-text text-sm font-semibold">Reflection reminder</p>
+          <p className="theme-text-muted mt-1 text-sm leading-6">
             {status.needsAttention
               ? `Reminder set for ${reminderTime}. Save a final entry today to keep your reflection streak warm.`
               : `Reminder set for ${reminderTime}. You already completed your final journal check-in today.`}

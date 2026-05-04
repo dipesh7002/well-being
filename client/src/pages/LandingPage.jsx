@@ -1,103 +1,74 @@
 import { Link } from "react-router-dom";
 
 const features = [
-  "Private journaling with secure accounts and role-based access",
-  "Mood tracking, trend charts, streaks, badges, and supportive prompts",
-  "Optional AI-assisted mood detection with user-controlled final mood choices",
-  "Gentle self-care suggestions and calm safety resource messaging"
+  {
+    title: "Private journaling",
+    desc: "Write freely. Your entries are secured and visible only to you.",
+  },
+  {
+    title: "Mood tracking",
+    desc: "Spot emotional patterns across days and weeks without guessing.",
+  },
+  {
+    title: "Streaks & prompts",
+    desc: "Gentle reminders and badges that encourage, never demand.",
+  },
+  {
+    title: "AI-assisted insights",
+    desc: "Optional mood detection — you always make the final call.",
+  },
 ];
 
 export function LandingPage() {
   return (
-    <div className="min-h-screen overflow-hidden px-4 py-6 md:px-8">
-      <div className="mx-auto max-w-7xl">
-        <header className="surface-card relative overflow-hidden bg-hero-glow">
-          <div className="absolute -left-12 top-0 h-56 w-56 rounded-full bg-orange-300/25 blur-3xl" />
-          <div className="absolute right-0 top-10 h-64 w-64 rounded-full bg-rose-300/20 blur-3xl" />
-          <div className="relative grid gap-10 px-2 py-8 lg:grid-cols-[1.15fr_0.85fr] lg:px-6">
-            <div className="space-y-6">
-              <div className="badge-pill">Supportive journaling for students and working adults</div>
-              <div>
-                <h1 className="max-w-3xl text-5xl font-semibold leading-tight text-stone-900 md:text-6xl">
-                  A warm digital home for reflection, mood awareness, and steady habits.
-                </h1>
-                <p className="mt-5 max-w-2xl text-lg text-stone-600">
-                  Well-Being Journal helps people write privately, notice emotional patterns, and build
-                  a gentler rhythm of care through prompts, streaks, insights, and mood-aware support.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-3">
-                <Link to="/signup" className="btn-primary">
-                  Create account
-                </Link>
-                <Link to="/login" className="btn-secondary">
-                  Log in
-                </Link>
-              </div>
-              <p className="text-sm text-stone-500">
-                This app is a supportive well-being tool only. It is not therapy, diagnosis, or emergency intervention.
-              </p>
-            </div>
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <nav className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-5">
+        <span className="gradient-title text-xl font-semibold">Well-Being</span>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/helper-portal"
+            className="hidden items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-medium transition-colors sm:inline-flex"
+            style={{ borderColor: "oklch(var(--line))", color: "oklch(var(--muted))" }}
+          >
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Helper portal
+          </Link>
+          <div className="mx-1 hidden h-4 w-px sm:block" style={{ background: "oklch(var(--line))" }} />
+          <Link to="/login" className="btn-secondary">Log in</Link>
+          <Link to="/signup" className="btn-primary">Get started</Link>
+        </div>
+      </nav>
 
-            <div className="surface-card-muted border-none bg-white/75 p-6">
-              <p className="gradient-title text-3xl">Today’s reflection could begin with:</p>
-              <div className="mt-6 rounded-[28px] bg-white p-5 shadow-soft">
-                <p className="text-sm uppercase tracking-[0.24em] text-stone-400">Guided prompt</p>
-                <p className="mt-3 text-lg font-medium text-stone-800">
-                  What helped you feel even a little more grounded today?
-                </p>
-              </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-[28px] bg-orange-50 p-4">
-                  <p className="text-sm font-semibold text-stone-700">Mood trends</p>
-                  <p className="mt-2 text-sm text-stone-500">Spot patterns across days and weeks instead of guessing.</p>
-                </div>
-                <div className="rounded-[28px] bg-rose-50 p-4">
-                  <p className="text-sm font-semibold text-stone-700">Streak rewards</p>
-                  <p className="mt-2 text-sm text-stone-500">Celebrate consistency with badges that feel encouraging, not demanding.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </header>
+      {/* Hero */}
+      <section className="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center px-6 pb-16 pt-20 text-center">
+        <h1 className="text-6xl font-semibold leading-[1.08] tracking-tight md:text-7xl">
+          A calmer way to
+          <br />
+          <span className="gradient-title">know yourself.</span>
+        </h1>
+        <p className="mx-auto mt-6 max-w-md text-lg theme-text-muted">
+          Write privately, track your mood, and build gentle reflection habits.
+        </p>
+        <Link to="/signup" className="btn-primary mt-10 px-9 py-3.5 text-base">
+          Start for free
+        </Link>
+        <p className="mt-4 text-xs theme-text-faint">
+          Not therapy or diagnosis — a supportive tool for reflection.
+        </p>
+      </section>
 
-        <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {features.map((feature) => (
-            <div key={feature} className="surface-card">
-              <p className="text-sm leading-6 text-stone-600">{feature}</p>
+      {/* Features */}
+      <section className="mx-auto w-full max-w-5xl px-6 pb-24">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((f) => (
+            <div key={f.title} className="surface-card">
+              <p className="font-semibold theme-text">{f.title}</p>
+              <p className="mt-2 text-sm leading-6 theme-text-muted">{f.desc}</p>
             </div>
           ))}
-        </section>
-
-        <section className="mt-6 grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
-          <div className="surface-card">
-            <h2 className="text-2xl font-semibold text-stone-900">Why this app exists</h2>
-            <p className="mt-4 text-sm leading-7 text-stone-600">
-              Paper journaling can be powerful, but it usually does not surface mood patterns, provide guided prompts,
-              or make it easy to maintain a reflection habit. This app combines private writing, emotional awareness,
-              and supportive routines in one calm experience.
-            </p>
-          </div>
-          <div className="surface-card bg-gradient-to-br from-orange-50 via-white to-rose-50">
-            <h2 className="text-2xl font-semibold text-stone-900">What makes it different</h2>
-            <div className="mt-4 grid gap-4 md:grid-cols-3">
-              <div>
-                <p className="font-semibold text-stone-700">Free reflection depth</p>
-                <p className="mt-2 text-sm text-stone-500">Combines mood logs and real writing, not just quick taps.</p>
-              </div>
-              <div>
-                <p className="font-semibold text-stone-700">Supportive insights</p>
-                <p className="mt-2 text-sm text-stone-500">Encouragement, prompts, streaks, and gentle suggestions work together.</p>
-              </div>
-              <div>
-                <p className="font-semibold text-stone-700">Privacy by default</p>
-                <p className="mt-2 text-sm text-stone-500">Admins see aggregates, and helpers only see entries shared with consent.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
-

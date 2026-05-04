@@ -4,6 +4,7 @@ import {
   createEntry,
   deleteEntry,
   getEntry,
+  getMyFeedback,
   listEntries,
   shareEntryWithHelper,
   updateEntry
@@ -16,6 +17,7 @@ export const journalRouter = express.Router();
 journalRouter.use(protect);
 
 journalRouter.get("/", listEntries);
+journalRouter.get("/feedback", getMyFeedback);
 journalRouter.get("/:id", getEntry);
 journalRouter.post(
   "/",

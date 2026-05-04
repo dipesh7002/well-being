@@ -29,6 +29,15 @@ const HelperDashboardPage = lazy(() =>
   import("./pages/HelperDashboardPage").then((module) => ({ default: module.HelperDashboardPage }))
 );
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then((module) => ({ default: module.NotFoundPage })));
+const BreathingExercisePage = lazy(() =>
+  import("./pages/BreathingExercisePage").then((module) => ({ default: module.BreathingExercisePage }))
+);
+const FeedbackPage = lazy(() =>
+  import("./pages/FeedbackPage").then((module) => ({ default: module.FeedbackPage }))
+);
+const HelperPortalPage = lazy(() =>
+  import("./pages/HelperPortalPage").then((module) => ({ default: module.HelperPortalPage }))
+);
 
 function App() {
   const { user } = useAuth();
@@ -39,6 +48,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={user ? <Navigate to="/app/dashboard" replace /> : <LoginPage />} />
         <Route path="/signup" element={user ? <Navigate to="/app/dashboard" replace /> : <SignupPage />} />
+        <Route path="/helper-portal" element={user ? <Navigate to="/app/helper" replace /> : <HelperPortalPage />} />
         <Route
           path="/app"
           element={
@@ -54,6 +64,8 @@ function App() {
           <Route path="history" element={<JournalHistoryPage />} />
           <Route path="analytics" element={<AnalyticsPage />} />
           <Route path="settings" element={<SettingsPage />} />
+          <Route path="breathe" element={<BreathingExercisePage />} />
+          <Route path="feedback" element={<FeedbackPage />} />
           <Route
             path="admin"
             element={

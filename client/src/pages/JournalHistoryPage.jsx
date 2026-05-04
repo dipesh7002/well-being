@@ -66,6 +66,7 @@ export function JournalHistoryPage() {
     loadHelpers();
   }, [user?.consentSettings?.allowHelperSharing]);
 
+
   async function handleDelete(entryId) {
     const confirmed = window.confirm("Delete this journal entry?");
     if (!confirmed) return;
@@ -145,7 +146,7 @@ export function JournalHistoryPage() {
           />
         </div>
         <div className="mt-4 flex flex-wrap gap-3">
-          <button type="button" className="btn-primary" onClick={loadEntries}>
+          <button type="button" className="btn-primary" onClick={() => loadEntries(filters)}>
             Apply filters
           </button>
           <button
@@ -162,7 +163,7 @@ export function JournalHistoryPage() {
       </Card>
 
       <Card title="Your entries" subtitle="Drafts and completed reflections are both shown here.">
-        {loading ? <p className="text-sm text-stone-500">Loading entries...</p> : null}
+        {loading ? <p className="theme-text-muted text-sm">Loading entries...</p> : null}
         {error ? <p className="text-sm text-rose-500">{error}</p> : null}
 
         {!loading && !entries.length ? (
@@ -181,19 +182,19 @@ export function JournalHistoryPage() {
           {entries.map((entry) => {
             const mood = getMoodMeta(entry.finalMood);
             return (
-              <div key={entry._id} className="rounded-[30px] border border-stone-200 bg-white/80 p-5">
+              <div key={entry._id} className="surface-panel rounded-[30px] p-5" style={{ border: "1px solid oklch(var(--line))" }}>
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="badge-pill">
                         {mood.emoji} {mood.label}
                       </span>
-                      <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-500">
+                      <span className="rounded-full px-3 py-1 text-xs font-semibold theme-text-muted" style={{ background: "oklch(var(--line) / 0.5)" }}>
                         {entry.status}
                       </span>
-                      <span className="text-sm text-stone-400">{formatFriendlyDate(entry.entryDate)}</span>
+                      <span className="theme-text-faint text-sm">{formatFriendlyDate(entry.entryDate)}</span>
                     </div>
-                    <p className="mt-4 whitespace-pre-wrap text-sm leading-7 text-stone-600">{entry.text}</p>
+                    <p className="mt-4 whitespace-pre-wrap text-sm leading-7 theme-text-muted">{entry.text}</p>
                   </div>
 
                   <div className="flex flex-col gap-3 lg:w-64">
@@ -204,7 +205,7 @@ export function JournalHistoryPage() {
                       Delete
                     </button>
                     {user?.consentSettings?.allowHelperSharing && helpers.length ? (
-                      <div className="space-y-2 rounded-[24px] bg-orange-50 p-3">
+                      <div className="space-y-2 rounded-[24px] p-3" style={{ background: "oklch(var(--primary-soft))" }}>
                         <select
                           className="input-base"
                           value={selectedHelpers[entry._id] || ""}
