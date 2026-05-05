@@ -7,6 +7,7 @@ import { env } from "./config/env.js";
 import { adminRouter } from "./routes/adminRoutes.js";
 import { analyticsRouter } from "./routes/analyticsRoutes.js";
 import { authRouter } from "./routes/authRoutes.js";
+import { breatheRouter } from "./routes/breatheRoutes.js";
 import { dashboardRouter } from "./routes/dashboardRoutes.js";
 import { healthRouter } from "./routes/healthRoutes.js";
 import { helperRouter } from "./routes/helperRoutes.js";
@@ -43,6 +44,7 @@ const authLimiter = rateLimit({
 app.use("/api/auth", authLimiter, authRouter);
 app.use("/api/health", healthRouter);
 app.use("/api/journals", journalRouter);
+app.use("/api/breathe", breatheRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/analytics", analyticsRouter);
 app.use("/api/settings", settingsRouter);

@@ -19,7 +19,7 @@ const navigationByRole = {
   ],
   helper: [
     { label: "Dashboard", to: "/app/dashboard" },
-    { label: "Helper", to: "/app/helper" },
+    { label: "Messages", to: "/app/helper" },
     { label: "Settings", to: "/app/settings" }
   ]
 };
@@ -123,10 +123,12 @@ export function AppShell() {
                           : location.pathname.includes("/breathe")
                             ? "Breathing Exercise"
                             : location.pathname.includes("/helper")
-                              ? "Helper Dashboard"
+                              ? "Messages"
                               : location.pathname.includes("/feedback")
                                 ? "Helper Feedback"
-                                : "Dashboard"}
+                                : user?.role === "helper"
+                                  ? "Dashboard"
+                                  : "Dashboard"}
               </h1>
             </div>
           </header>

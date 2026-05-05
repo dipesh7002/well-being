@@ -1,5 +1,29 @@
 import { SharedAccess } from "../models/SharedAccess.js";
 
+export async function getHelperStats(req, res, next) {
+  try {
+    const records = await SharedAccess.find({ helperId: req.user._id, revokedAt: null })
+      .populate({ path: "sharedEntryIds", match: { deletedAt: null }, select: "entryDate finalMood" })
+      .populate({ path: "userId", select: "fullName" })
+      .lean();
+
+    const totalUsers = records.length;
+    const totalEntries = records.reduce((sum, r) => sum + (r.sharedEntryIds?.length || 0), 0);
+    const totalFeedback = records.reduce((sum, r) => sum + (r.helperFeedback?.length || 0), 0);
+
+    const recentEntries = records
+      .flatMap((r) =>
+        (r.sharedEntryIds || []).map((e) => ({ ...e, userName: r.userId?.fullName }))
+      )
+      .sort((a, b) => new Date(b.entryDate) - new Date(a.entryDate))
+      .slice(0, 6);
+
+    return res.json({ totalUsers, totalEntries, totalFeedback, recentEntries });
+  } catch (error) {
+    next(error);
+  }
+}
+
 export async function getSharedEntries(req, res, next) {
   try {
     const sharedAccess = await SharedAccess.find({

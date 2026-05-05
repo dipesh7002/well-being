@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { http } from "../api/http";
 import { Card } from "../components/common/Card";
 
 const TECHNIQUES = [
@@ -89,6 +90,12 @@ export function BreathingExercisePage() {
         clearInterval(intervalRef.current);
         setStatus("COMPLETE");
         setCycleCount(nextCc);
+        const totalSeconds = tech.phases.reduce((sum, p) => sum + p.duration, 0) * targetRounds;
+        http.post("/breathe/sessions", {
+          technique: techniqueId,
+          rounds: targetRounds,
+          durationSeconds: totalSeconds
+        }).catch(() => {});
         return;
       }
 

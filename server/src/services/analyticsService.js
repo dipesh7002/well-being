@@ -1,3 +1,4 @@
+import { BreathingSession } from "../models/BreathingSession.js";
 import { JournalEntry } from "../models/JournalEntry.js";
 import { User } from "../models/User.js";
 import { MOOD_OPTIONS } from "../utils/constants.js";
@@ -99,6 +100,49 @@ export async function getUserAnalytics(userId) {
       )
     }
   };
+}
+
+const TECHNIQUE_NAMES = {
+  "478": "4-7-8 Breathing",
+  "box": "Box Breathing",
+  "calm": "4-6 Calm Breathing"
+};
+
+export async function getBreathingAnalytics(userId) {
+  const sessions = await BreathingSession.find({ userId }).sort({ completedAt: 1 }).lean();
+
+  if (!sessions.length) {
+    return {
+      totalSessions: 0,
+      totalMinutes: 0,
+      sessionsThisWeek: 0,
+      favouriteTechnique: null,
+      techniqueBreakdown: { "478": 0, box: 0, calm: 0 },
+      recentSessions: []
+    };
+  }
+
+  const totalSessions = sessions.length;
+  const totalSeconds = sessions.reduce((sum, s) => sum + s.durationSeconds, 0);
+  const totalMinutes = Math.round(totalSeconds / 60);
+
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+  const sessionsThisWeek = sessions.filter(s => new Date(s.completedAt) >= weekAgo).length;
+
+  const techniqueBreakdown = { "478": 0, box: 0, calm: 0 };
+  sessions.forEach(s => { techniqueBreakdown[s.technique] = (techniqueBreakdown[s.technique] || 0) + 1; });
+
+  const favouriteId = Object.entries(techniqueBreakdown).sort((a, b) => b[1] - a[1])[0][0];
+  const favouriteTechnique = techniqueBreakdown[favouriteId] > 0 ? TECHNIQUE_NAMES[favouriteId] : null;
+
+  const recentSessions = sessions.slice(-10).reverse().map(s => ({
+    technique: TECHNIQUE_NAMES[s.technique],
+    rounds: s.rounds,
+    durationSeconds: s.durationSeconds,
+    completedAt: s.completedAt
+  }));
+
+  return { totalSessions, totalMinutes, sessionsThisWeek, favouriteTechnique, techniqueBreakdown, recentSessions };
 }
 
 export async function getAdminAnalytics() {

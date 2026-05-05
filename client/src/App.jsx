@@ -28,6 +28,9 @@ const AdminDashboardPage = lazy(() =>
 const HelperDashboardPage = lazy(() =>
   import("./pages/HelperDashboardPage").then((module) => ({ default: module.HelperDashboardPage }))
 );
+const HelperOverviewPage = lazy(() =>
+  import("./pages/HelperOverviewPage").then((module) => ({ default: module.HelperOverviewPage }))
+);
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage").then((module) => ({ default: module.NotFoundPage })));
 const BreathingExercisePage = lazy(() =>
   import("./pages/BreathingExercisePage").then((module) => ({ default: module.BreathingExercisePage }))
@@ -58,7 +61,10 @@ function App() {
           }
         >
           <Route index element={<Navigate to="/app/dashboard" replace />} />
-          <Route path="dashboard" element={<DashboardPage />} />
+          <Route
+            path="dashboard"
+            element={user?.role === "helper" ? <HelperOverviewPage /> : <DashboardPage />}
+          />
           <Route path="journal/new" element={<JournalEditorPage />} />
           <Route path="journal/:id/edit" element={<JournalEditorPage />} />
           <Route path="history" element={<JournalHistoryPage />} />

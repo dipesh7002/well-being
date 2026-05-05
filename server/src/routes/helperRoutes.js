@@ -1,6 +1,6 @@
 import express from "express";
 import { body } from "express-validator";
-import { addHelperFeedback, getSharedEntries } from "../controllers/helperController.js";
+import { addHelperFeedback, getHelperStats, getSharedEntries } from "../controllers/helperController.js";
 import { authorize, protect } from "../middleware/auth.js";
 import { handleValidation } from "../middleware/validate.js";
 import { ROLES } from "../utils/constants.js";
@@ -8,6 +8,7 @@ import { ROLES } from "../utils/constants.js";
 export const helperRouter = express.Router();
 
 helperRouter.use(protect, authorize(ROLES.HELPER));
+helperRouter.get("/stats", getHelperStats);
 helperRouter.get("/shared-entries", getSharedEntries);
 helperRouter.post(
   "/shared-access/:id/feedback",
